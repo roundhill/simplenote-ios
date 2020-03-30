@@ -46,7 +46,7 @@ class SimplenoteScreenshots: XCTestCase {
         let backButton = app.buttons.matching(NSPredicate(format: "label = %@", "Notes")).firstMatch
         XCTAssertTrue(backButton.waitForExistence(timeout: 3))
 
-        snapshot("0MarkdownPreview")
+        snapshot("1-note")
     }
 
     func logout(using app: XCUIApplication) {
