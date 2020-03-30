@@ -373,6 +373,40 @@ end
     File.write("comment.json", { body: comment_body }.to_json)
   end
 
+  #####################################################################################
+  # Screenshot lanes
+  #####################################################################################
+
+  desc "Runs through the app taking screenshots"
+  lane :take_screenshots do |options|
+    devices = [
+      "iPhone 8 Plus"
+    ]
+
+    languages = [
+      "en-US"
+    ]
+
+    capture_ios_screenshots(
+      scheme: "SimplenoteScreenshots",
+
+      localize_simulator: true,
+      languages: languages,
+
+      devices: devices,
+
+      output_directory: screenshots_directory,
+      clear_previous_screenshots: true,
+
+      # Retry a few times if something is a little flaky
+      number_of_retries: 3,
+
+      # But fail completely after those 3 retries
+      stop_after_first_error: true
+    )
+  end
+
+  desc "Creates promo screenshots from existing screenshots"
   lane :create_promo_screenshots do |options|
     unless Fastlane::Helper::GitHelper.has_git_lfs then
       UI.user_error!("Git LFS not enabled – Unable to generate promo screenshots. Run `git lfs install && git lfs fetch && git lfs pull` to fix this.")
@@ -455,3 +489,11 @@ desc "Get a list of pull request from `start_tag` to the current state"
 lane :get_pullrequests_list do | options |
   get_prs_list(repository:GHHELPER_REPO, start_tag:"#{options[:start_tag]}", report_path:"#{File.expand_path('~')}/simplenoteios_prs_list.txt")
 end 
+
+def fastlane_directory()
+  File.expand_path File.dirname(__FILE__)
+end
+
+def screenshots_directory()
+  File.join(fastlane_directory, "screenshots")
+end
